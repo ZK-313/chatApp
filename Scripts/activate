@@ -42,10 +42,10 @@ deactivate nondestructive
 if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] ; then
     # transform D:\path\to\venv to /d/path/to/venv on MSYS
     # and to /cygdrive/d/path/to/venv on Cygwin
-    export VIRTUAL_ENV=$(cygpath "Z:\git\Django-chat-app\django-chat-app")
+    export VIRTUAL_ENV=$(cygpath "Z:\git\Django-chat-app")
 else
     # use the path as-is
-    export VIRTUAL_ENV="Z:\git\Django-chat-app\django-chat-app"
+    export VIRTUAL_ENV="Z:\git\Django-chat-app"
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"
@@ -62,9 +62,9 @@ fi
 
 if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
     _OLD_VIRTUAL_PS1="${PS1:-}"
-    PS1="(django-chat-app) ${PS1:-}"
+    PS1="(Django-chat-app) ${PS1:-}"
     export PS1
-    VIRTUAL_ENV_PROMPT="(django-chat-app) "
+    VIRTUAL_ENV_PROMPT="(Django-chat-app) "
     export VIRTUAL_ENV_PROMPT
 fi
 
