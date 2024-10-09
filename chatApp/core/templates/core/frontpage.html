@@ -4,14 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}"> 
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-    <div class="container">
-        <button class="menu-button">Messages</button>
-        <button class="menu-button">Settings</button>
-        <button class="menu-button">Help</button>
+    <div class="navbar">
+        <a href="#">Settings</a>
+        <a href="#">Messages</a>
+        <a href="#">Help</a>
+    </div>
+
+    <div class="login-container">
+        <h1>Log in</h1>
+        <form class="login-form">
+            <input type="text" placeholder="Username..." class="input-field username">
+            <input type="password" placeholder="Password..." class="input-field password">
+            <button type="submit">SUBMIT</button>
+        </form>
     </div>
 </body>
 </html>
