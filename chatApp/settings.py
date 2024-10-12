@@ -73,7 +73,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'chatApp.wsgi.application'
 ASGI_APPLICATION = 'chatApp.asgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -83,6 +82,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = '/chat'
+#LOGIN_URL = "/"
 
 
 # Password validation
