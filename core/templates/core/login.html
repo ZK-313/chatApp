@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block title %}log in! {% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+    <h1>Log in</h1>
+    <form class="login-form" method="post" action=".">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username..." class="input-field username">
+        <input type="password" name="password" placeholder="Password..." class="input-field password">
+        <p class="noAcc">Don't have an account? sign up <a href="/signup">here!</a></p>
+        
+        <button type="submit" class="submitbut">LOG IN</button>
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p class="error"> {{ error|escape }} </p>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    </form>
+</div>
+
+{% endblock %}
