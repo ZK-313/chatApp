@@ -14,6 +14,18 @@ body {
     flex-direction: column;
 }
 
+.noAcc{
+    font-size: 0.8rem;
+    opacity: 0;
+    transform: translateX(-100%);
+    animation: slideIn 1s forwards;
+    animation-delay: 0.4s;
+}
+.noAcc a{
+    /*color: #b8860b;*/
+    color: #daa520;
+}
+
 .navbar {
     position: absolute;
     top: 20px;
@@ -27,6 +39,20 @@ body {
     align-items: center;
     padding: 10px 0;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.logoutBut{
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+.logoutBut:hover{
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .navbar a {
@@ -47,6 +73,10 @@ body {
     color: #cccccc;
 }
 
+.signup-container {
+    text-align: center;
+    color: #cccccc;
+}
 h1 {
     font-size: 3rem;
     margin-bottom: 20px;
@@ -54,6 +84,11 @@ h1 {
 }
 
 .login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.signup-form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -77,12 +112,16 @@ h1 {
 
 .input-field.username {
     animation: slideIn 1s forwards;
-    animation-delay: 0.5s;
+    animation-delay: 0.2s;
 }
 
 .input-field.password {
     animation: slideIn 1s forwards;
-    animation-delay: 1s;
+    animation-delay: 0.4s;
+}
+.input-field.repassword {
+    animation: slideIn 1s forwards;
+    animation-delay: 0.6s;
 }
 
 .submitbut {
@@ -96,9 +135,13 @@ h1 {
     margin-top: 20px;
     transform: translateX(-100%);
     animation: slideIn 1s forwards;
-    animation-delay: 1.5s;
+    animation-delay: 0.8s;
     opacity: 0;
     transition: background-color 0.3s ease;
+}
+
+.error{
+    color: red;
 }
 
 .submitbut:hover {

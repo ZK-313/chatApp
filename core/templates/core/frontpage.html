@@ -1,27 +1,8 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-<body>
-    <div class="navbar">
-        <a href="#">Settings</a>
-        <a href="#">Messages</a>
-        <a href="#">Help</a>
-        <a href="#">Log in</a>
-    </div>
+{% extends 'core/base.html' %}
+{% block title %}Welcome! {% endblock %}
 
-    <div class="login-container">
-        <h1>Log in</h1>
-        <form class="login-form">
-            <input type="text" placeholder="Username..." class="input-field username">
-            <input type="password" placeholder="Password..." class="input-field password">
-            <button type="submit" class="submitbut">SUBMIT</button>
-        </form>
-    </div>
-</body>
-</html>
+{% block content %}
+
+
+
+{% endblock %}
