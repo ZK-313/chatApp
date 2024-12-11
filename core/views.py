@@ -29,3 +29,6 @@ def signup(request):
     return render(request, 'core/signup.html', {'form': form})
 
 # Create your views here.
+
+
+#I want to add this comment
