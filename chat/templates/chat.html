@@ -1,40 +1,9 @@
-{% comment %} {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}"> 
-</head>
-<body>
-    <div class="container">
-        <button class="menu-button">Messages</button>
-        <button class="menu-button">Settings</button>
-        <button class="menu-button">Help</button>
-    </div>
-    
-</body>
-</html> {% endcomment %}
+{% extends 'core/base.html' %}
 
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}"> 
-</head>
-<body>
-    <div class="container">
-        <button class="menu-button" id="messages-button">Messages</button>
-        <button class="menu-button">Settings</button>
-        <button class="menu-button">Help</button>
-    </div>
+{% block content %}
 
     <!-- Chat interface (initially hidden) -->
-    <div id="chat-container" style="display: none;">
+    <div id="chat-container">
         <h2>Chat Room</h2>
         <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
         <input id="chat-message-input" type="text" size="100" placeholder="Type a message..."><br>
@@ -44,16 +13,12 @@
 
     <script>
         // Show/hide chat interface
-        const messagesButton = document.getElementById('messages-button');
+        {% comment %} const messagesButton = document.getElementById('messages-button');
         const chatContainer = document.getElementById('chat-container');
         const closeChatButton = document.getElementById('close-chat');
 
-        messagesButton.addEventListener('click', () => {
-            chatContainer.style.display = 'block'; // Show chat interface
-        });
-
         closeChatButton.addEventListener('click', () => {
-            chatContainer.style.display = 'none'; // Hide chat interface
+            console.log('ws://' + window.location.host + '/chat/general/')
         });
 
         // WebSocket logic
@@ -61,6 +26,7 @@
         const chatSocket = new WebSocket(
             'ws://' + window.location.host + '/chat/' + roomName + '/'
         );
+        console.log('ws://' + window.location.host + '/chat/' + roomName + '/')
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
@@ -82,10 +48,47 @@
         });
 
         chatSubmit.addEventListener('click', function() {
+            console.log("I am here now")
             const message = chatInput.value;
             chatSocket.send(JSON.stringify({ 'message': message }));
             chatInput.value = '';
-        });
+        }); {% endcomment %}
+        {% comment %} const roomName = JSON.parse(document.getElementById('room-name').textContent); {% endcomment %}
+        const roomName = "general";
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').value += (data.message + '\n');
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.key === 'Enter') {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        };
     </script>
-</body>
-</html>
+
+    {% endblock %}
+
