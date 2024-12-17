@@ -12,8 +12,8 @@
     </div>
 
     <script>
-        // Show/hide chat interface
-        {% comment %} const messagesButton = document.getElementById('messages-button');
+        {% comment %} // Show/hide chat interface
+        const messagesButton = document.getElementById('messages-button');
         const chatContainer = document.getElementById('chat-container');
         const closeChatButton = document.getElementById('close-chat');
 
@@ -54,7 +54,9 @@
             chatInput.value = '';
         }); {% endcomment %}
         {% comment %} const roomName = JSON.parse(document.getElementById('room-name').textContent); {% endcomment %}
-        const roomName = "general";
+
+
+       const roomName = "general";
 
         const chatSocket = new WebSocket(
             'ws://'
