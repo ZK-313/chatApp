@@ -9,6 +9,10 @@
 from django.shortcuts import render
 
 def chat_room(request, room_name):
+    current_user = request.user
+    context = {
+        'user': current_user,
+    }
     return render(request, 'chat.html', {'room_name': room_name})
 def chat(request):
     return render(request, 'chat.html')
