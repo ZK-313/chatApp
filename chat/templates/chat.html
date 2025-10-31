@@ -2,61 +2,50 @@
 
 {% block content %}
 
-    <!-- Chat interface (initially hidden) -->
-    <div id="chat-container">
-        <h2>Chat Room</h2>
-        <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
-        <input id="chat-message-input" type="text" size="100" placeholder="Type a message..."><br>
-        <button id="chat-message-submit">Send</button>
-        <button id="close-chat">Close Chat</button>
+    <!-- Modern Chat interface -->
+    <div class="chat-wrapper">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="chat-room-info">
+                        <h2>💬 Chat Room</h2>
+                        <span class="room-name">#general</span>
+                    </div>
+                    <div class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Connected</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-log">
+                <div class="welcome-message">
+                    <p>Welcome to the chat! Start typing to send a message.</p>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input 
+                        id="chat-message-input" 
+                        type="text" 
+                        placeholder="Type your message here..." 
+                        maxlength="500"
+                        autocomplete="off"
+                    >
+                    <button id="chat-message-submit" class="send-button" aria-label="Send message">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        {% comment %} // Show/hide chat interface
-        const messagesButton = document.getElementById('messages-button');
-        const chatContainer = document.getElementById('chat-container');
-        const closeChatButton = document.getElementById('close-chat');
-
-        closeChatButton.addEventListener('click', () => {
-            console.log('ws://' + window.location.host + '/chat/general/')
-        });
-
-        // WebSocket logic
-        const roomName = "general"; // You can dynamically assign room names if needed
-        const chatSocket = new WebSocket(
-            'ws://' + window.location.host + '/chat/' + roomName + '/'
-        );
-        console.log('ws://' + window.location.host + '/chat/' + roomName + '/')
-
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            const chatLog = document.getElementById('chat-log');
-            chatLog.value += (data.message + '\n');
-        };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        const chatInput = document.getElementById('chat-message-input');
-        const chatSubmit = document.getElementById('chat-message-submit');
-
-        chatInput.addEventListener('keyup', function(e) {
-            if (e.keyCode === 13) {  // Enter key
-                chatSubmit.click();
-            }
-        });
-
-        chatSubmit.addEventListener('click', function() {
-            console.log("I am here now")
-            const message = chatInput.value;
-            chatSocket.send(JSON.stringify({ 'message': message }));
-            chatInput.value = '';
-        }); {% endcomment %}
-        {% comment %} const roomName = JSON.parse(document.getElementById('room-name').textContent); {% endcomment %}
-
-
-       const roomName = "general";
+        const roomName = "general";
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -68,27 +57,98 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += ( {{ user.username }} + ": " + data.message + '\n');
+            const username = data.username || 'Anonymous';
+            const message = data.message;
+            addMessageToChat(username, message);
         };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+        
+        function addMessageToChat(username, message) {
+            const chatLog = document.getElementById('chat-log');
+            const currentUser = '{{ user.username|default:"Anonymous" }}';
+            const isOwnMessage = username === currentUser;
+            
+            // Remove welcome message if it exists
+            const welcomeMsg = chatLog.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isOwnMessage ? 'own-message' : 'other-message'}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            if (!isOwnMessage) {
+                const usernameSpan = document.createElement('span');
+                usernameSpan.className = 'message-username';
+                usernameSpan.textContent = username;
+                messageContent.appendChild(usernameSpan);
+            }
+            
+            const messageText = document.createElement('p');
+            messageText.className = 'message-text';
+            messageText.textContent = message;
+            messageContent.appendChild(messageText);
+            
+            const messageTime = document.createElement('span');
+            messageTime.className = 'message-time';
+            messageTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            messageContent.appendChild(messageTime);
+            
+            messageDiv.appendChild(messageContent);
+            chatLog.appendChild(messageDiv);
+            
+            // Auto scroll to bottom
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
 
         document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
+        
+        function sendMessage() {
             const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
+            const message = messageInputDom.value.trim();
+            
+            if (message === '') {
+                return;
+            }
+            
             chatSocket.send(JSON.stringify({
                 'message': message
             }));
             messageInputDom.value = '';
+            messageInputDom.focus();
+        }
+        
+        document.querySelector('#chat-message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        document.querySelector('#chat-message-submit').addEventListener('click', function(e) {
+            e.preventDefault();
+            sendMessage();
+        });
+        
+        // Update status indicator on connection
+        chatSocket.onopen = function() {
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.querySelector('.status-text');
+            if (statusDot && statusText) {
+                statusDot.style.background = '#4ade80';
+                statusText.textContent = 'Connected';
+            }
+        };
+        
+        chatSocket.onclose = function() {
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.querySelector('.status-text');
+            if (statusDot && statusText) {
+                statusDot.style.background = '#ef4444';
+                statusText.textContent = 'Disconnected';
+            }
         };
     </script>
 

@@ -13,7 +13,7 @@ def front_test(request):
     return redirect('/login')
 
 def chat(request):
-    return render(request, 'core/chat.html')
+    return render(request, 'core/chat.html', {'user': request.user})
 
 def signup(request):
     if request.method == 'POST':
